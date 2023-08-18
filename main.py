@@ -34,44 +34,36 @@ def main():
             if nextto_down(player_xy):
                 jumpsLeft = 2
             if keys[pygame.K_w] or keys[pygame.K_SPACE]:
-                if not jumped and not nextto_up(player_xy):
-                    if jumpsLeft > 0:
-                        if jumpsLeft == 1:
-                            if random.randint(0, 2) == 1:
-                                player_y_vel = -10
-                                jumpsLeft -= 1
-                                jumped = True
-                            else:
-                                player_y_vel = 10
-                                flip = True
-                                jumpsLeft -= 1
-                                jumped = True
-                        else:
-                            player_y_vel = -10
-                            jumpsLeft -= 1
-                            jumped = True
+                if nextto_down(player_xy):
+                    player_y_vel = -10
+                    jumpsLeft -= 1
+                    jumped = True
+                if not jumped and jumpsLeft == 1 and not nextto_up(player_xy):
+                    jumpsLeft = 0
+                    jumped = True
+                    if random.randint(0, 2) == 1:
+                        player_y_vel = -10
+                    else:
+                        player_y_vel = 10
+                        flip = True
             else:
                 jumped = False
-        elif flip:
+        else:
             if nextto_up(player_xy):
                 jumpsLeft = 2
             if keys[pygame.K_w] or keys[pygame.K_SPACE]:
-                if not jumped and not nextto_down(player_xy):
-                    if jumpsLeft > 0:
-                        if jumpsLeft == 1:
-                            if random.randint(0, 2) == 1:
-                                player_y_vel = 10
-                                jumpsLeft -= 1
-                                jumped = True
-                            else:
-                                player_y_vel = -10
-                                flip = False
-                                jumpsLeft -= 1
-                                jumped = True
-                        else:
-                            player_y_vel = 10
-                            jumpsLeft -= 1
-                            jumped = True
+                if nextto_up(player_xy):
+                    player_y_vel = 10
+                    jumpsLeft -= 1
+                    jumped = True
+                if not jumped and jumpsLeft == 1 and not nextto_down(player_xy):
+                    jumpsLeft = 0
+                    jumped = True
+                    if random.randint(0, 2) == 1:
+                        player_y_vel = 10
+                    else:
+                        player_y_vel = -10
+                        flip = False
             else:
                 jumped = False
 
