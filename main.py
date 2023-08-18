@@ -1,13 +1,13 @@
 def main():
     import pygame
     from collisions import nextto_down, nextto_up, nextto_left, nextto_right
+    import texture_loading as tl
 
     screen = pygame.display.set_mode((1000,800))
 
     clock = pygame.time.Clock()
-    player = pygame.Surface((50,100))
-    player.fill(pygame.Color(0,0,255))
 
+    player = tl.player
     player_xy = [0, 0]
     player_y_vel = 0
 
