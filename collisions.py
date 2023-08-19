@@ -10,7 +10,7 @@ def nextto_down(player_xy, level):
     if player_xy[1] + 70 + 1 > 600:
         return True
     if (player_xy[1] + 70) % 40 == 0:
-        if level[math.floor((player_xy[1] + 70) / 40)][math.floor(player_xy[0] / 40)] == 3:
+        if level[math.floor((player_xy[1] + 70) / 40)][math.floor(( player_xy[0] + 17 ) / 40)] == 3:
             die()
     if (player_xy[1] + 70) % 40 == 0:
         if level[math.floor((player_xy[1] + 70) / 40)][math.floor(player_xy[0] / 40)] != 0 or level[math.floor((player_xy[1] + 70) / 40)][math.floor((player_xy[0] + 34) / 40)] != 0:
@@ -23,7 +23,7 @@ def nextto_up(player_xy, level):
     if player_xy[1] - 1 < 0:
         return True
     if (player_xy[0] - 40) % 40 == 0:
-        if level[math.floor((player_xy[1] - 40) / 40)][math.floor(player_xy[0] / 40)] == 4:
+        if level[math.floor((player_xy[1] - 40) / 40)][math.floor((player_xy[0] + 17 ) / 40)] == 4:
             die()
     if (player_xy[1] - 40) % 40 == 0:
         if level[math.floor((player_xy[1] - 40) / 40)][math.floor(player_xy[0] / 40)] != 0 or level[math.floor((player_xy[1] - 40) / 40)][math.floor((player_xy[0] + 34) / 40)] != 0:

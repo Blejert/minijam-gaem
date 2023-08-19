@@ -1,4 +1,4 @@
-import button
+#import button
 
 import pygame
 import math
@@ -63,22 +63,22 @@ def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFli
         WIN.blit(hi_text, (WIDTH/2 - 100, HEIGHT/2))
     if flip:
         hi_text = FONT.render("Tails", True, "white")
-        WIN.blit(hi_text, (WIDTH - 60, 45))
+        WIN.blit(hi_text, (player_xy[0] - 10, player_xy[1] - (20 if flip else 5)))
     else:
         hi_text = FONT.render("Heads", True, "white")
-        WIN.blit(hi_text, (WIDTH - 70, 45))
+        WIN.blit(hi_text, (player_xy[0] - 10, player_xy[1] - (20 if flip else 5)))
     ###
 
     # misc #
     if not jumpsLeft > 0:
         if frame < 8: #<- this animation has 4 frames, so I play it 2 times
-            frame = animation(WIN, [coin, coin1, coin2, coin3], (WIDTH - 55, 0), 100, False)
+            frame = animation(WIN, [coin, coin1, coin2, coin3], (player_xy[0], player_xy[1] - (55 if flip else 40)), 100, False)
         else:
-            animation(WIN, [coin, coin1, coin2, coin3], (WIDTH - 55, 0), 100, True)
-            WIN.blit(coin, (WIDTH - 55, 0))
+            animation(WIN, [coin, coin1, coin2, coin3], (player_xy[0], player_xy[1] - (40 if flip else 40)), 100, True)
+            WIN.blit(coin, (player_xy[0], player_xy[1] - (55 if flip else 40)))
     else:
         frame = 0
-        WIN.blit(coin, (WIDTH - 55, 0))
+        WIN.blit(coin, (player_xy[0], player_xy[1] - (55 if flip else 40)))
     ###
 
     # player #
