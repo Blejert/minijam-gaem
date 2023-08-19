@@ -61,8 +61,6 @@ def draw(player):
     ###
 
     # text #
-    s = [coin, coin1, coin2, coin3]
-    xy = (0, 0)
     if flip:
         hi_text = FONT.render("Tails", True, "white")
         WIN.blit(hi_text, (WIDTH - 60, 45))
