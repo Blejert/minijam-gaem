@@ -11,6 +11,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Coin Jump")
 
 level = levels.level1
+level_list = [levels.level, levels.level1, levels.level2, levels.level3, levels.level4]
 
 # variables #
 PLAYER_WIDTH = 50
@@ -38,25 +39,12 @@ def selectlevel():
 
     # level stuff #
     if not play:
-        number = random.randint(1, 3)
-        if number == 1:
-            if not level == levels.level:
-                level = levels.level
-                play = True
-            else:
-                selectlevel()
-        elif number == 2:
-            if not level == levels.level1:
-                level = levels.level1
-                play = True
-            else:
-                selectlevel()
+        chosen_level = level_list[random.randint(0, 2)]
+        if not level == chosen_level:
+            level = chosen_level
+            play = True
         else:
-            if not level == levels.level2:
-                level = levels.level2
-                play = True
-            else:
-                selectlevel()
+            selectlevel()
 
     ###
     if nexttolevel_right(player_xy):
