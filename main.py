@@ -1,35 +1,85 @@
+import pygame
+import random
+from collisions import nextto_down, nextto_up, nextto_left, nextto_right
+
+pygame.font.init()
+
+WIDTH, HEIGHT = 1275, 675
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("First Python Game")
+
+# BG = pygame.transform.scale(pygame.image.load("bg.PNG"), (WIDTH, HEIGHT))
+
+
+# variables #
+PLAYER_WIDTH = 50
+PLAYER_HEIGHT = 50
+PLAYER_VEL = 5
+player_xy = [0, 0]
+player_y_vel = 0
+jumpsLeft = 0
+flip = False
+playerFlipX = False
+###
+
+
+FONT = pygame.font.SysFont("", 30)
+
+test = False
+
+# art #
+player = pygame.transform.scale(pygame.image.load("art/tile002.png"), (35, 70))
+player_flippedX = pygame.transform.flip(player, True, False)
+player_flippedY = pygame.transform.flip(player, False, True)
+player_flippedYX = pygame.transform.flip(player, True, True)
+###
+
+
+def draw(player):
+    # WIN.blit(BG, (0, 0))
+    WIN.fill('white')
+
+    # hi_text = FONT.render("HI", True, "white")
+    # WIN.blit(hi_text, (10, 10))
+
+    # player #
+    if not playerFlipX:
+        if flip:
+            WIN.blit(player_flippedY, (player_xy[0], player_xy[1]))
+        else:
+            WIN.blit(player, (player_xy[0], player_xy[1]))
+    else:
+        if flip:
+            WIN.blit(player_flippedYX, (player_xy[0], player_xy[1]))
+        else:
+            WIN.blit(player_flippedX, (player_xy[0], player_xy[1]))
+    ###
+
+    pygame.display.update()
+
+
 def main():
-    import pygame
-    import random
-    from collisions import nextto_down, nextto_up, nextto_left, nextto_right
+    # stupid global stuff #
+    global player_y_vel
+    global flip
+    global jumpsLeft
+    global jumped
+    global playerFlipX
+    ###
 
-    WIDTH, HEIGHT = 1275, 675
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
-    # art
-    player = pygame.transform.scale(pygame.image.load("art/tile002.png"), (35, 70))
-    player_flippedX = pygame.transform.flip(player, True, False)
-    player_flippedY = pygame.transform.flip(player, False, True)
-    player_flippedYX = pygame.transform.flip(player, True, True)
+    run = True
 
     clock = pygame.time.Clock()
 
-    player_xy = [0, 0]
-    player_y_vel = 0
+    while run:
+        clock.tick(60)
 
-    # veriables
-    jumpsLeft = 0
-    flip = False
-    playerFlipX = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                break
 
-    while True:
-        for e in pygame.event.get():
-            if e.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-
-        screen.fill(pygame.Color(0,0,200))
-
+        # Player Movement #
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d] and not nextto_right(player_xy):
             player_xy[0] += 5
@@ -37,7 +87,9 @@ def main():
         if keys[pygame.K_a] and not nextto_left(player_xy):
             player_xy[0] -= 5
             playerFlipX = True
+        ###
 
+        # jump #
         if not flip:
             if nextto_down(player_xy):
                 jumpsLeft = 2
@@ -74,14 +126,9 @@ def main():
                         flip = False
             else:
                 jumped = False
+        ###
 
-        for _ in range(round(player_y_vel)):
-            if player_y_vel > 0 and not nextto_down(player_xy):
-                player_xy[1] += 1
-        for _ in range(-round(player_y_vel)):
-            if player_y_vel < 0 and not nextto_up(player_xy):
-                player_xy[1] -= 1
-
+        # gravity #
         if not flip:
             if not nextto_down(player_xy):
                 player_y_vel += 0.3
@@ -92,21 +139,28 @@ def main():
                 player_y_vel -= 0.3
             elif player_y_vel < 0:
                 player_y_vel = 0
+        ###
 
-        if not playerFlipX:
-            if flip:
-                screen.blit(player_flippedY, (player_xy[0], player_xy[1]))
-            else:
-                screen.blit(player, (player_xy[0], player_xy[1]))
-        else:
-            if flip:
-                screen.blit(player_flippedYX, (player_xy[0], player_xy[1]))
-            else:
-                screen.blit(player_flippedX, (player_xy[0], player_xy[1]))
+        # velocity I think #
+        for _ in range(round(player_y_vel)):
+            if player_y_vel > 0 and not nextto_down(player_xy):
+                player_xy[1] += 1
+        for _ in range(-round(player_y_vel)):
+            if player_y_vel < 0 and not nextto_up(player_xy):
+                player_xy[1] -= 1
+        ###
 
-        print(jumpsLeft)
-        pygame.display.update()
-        clock.tick(60)
+        draw(player)
+
+    pygame.quit()
+
+
+if __name__ == "__main__":
+    main()
+
+
+    pygame.quit()
+
 
 if __name__ == "__main__":
     main()
