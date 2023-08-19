@@ -23,8 +23,10 @@ jumpsLeft = 0
 flip = False
 playerFlipX = False
 frame = 0
-score = 0
+Highscore = -1
+score = -1
 play = False
+test = False
 ###
 
 # MusicAndSounds/Sounds #
@@ -33,17 +35,24 @@ pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)
 ###
 
+def resetscore():
+    global score
+    score = 0
+
 
 def selectlevel():
-    global play, player_xy, level, flip
-
+    global play, player_xy, level, flip, Highscore, score
     # level stuff #
     if not play:
+        if not Draw.dead:
+            score += 1
+            if score > Highscore:
+                Highscore += 1
+        print("hi")
         chosen_level = level_list[random.randint(0, 2)]
         if not level == chosen_level:
             level = chosen_level
             play = True
-        else:
             selectlevel()
 
     ###
@@ -55,7 +64,7 @@ def selectlevel():
 
 def main():
     # stupid global stuff #
-    global player_y_vel, flip, jumpsLeft, jumped, playerFlipX
+    global player_y_vel, flip, jumpsLeft, jumped, playerFlipX, player_xy, play, Highscore, score
     ###
 
     run = True
@@ -120,11 +129,7 @@ def main():
                             flip = False
                 else:
                     jumped = False
-            ###
-        else:
-            # stop music #
-            pygame.mixer.music.stop()
-            ###
+            ###d
 
 
         # gravity #
@@ -151,10 +156,22 @@ def main():
                 player_xy[1] -= 1
         ###
 
-        Draw.draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX)
+        if Draw.dead:
+            player_xy = [0, 450]
+            if not test:
+                play = False
+                test = True
+                flip = False
+        else:
+            test = False
+
+        if Draw.t:
+            score = 0
+            Draw.t = False
+
+        Draw.draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, Highscore, score)
 
     pygame.quit()
-
 
 if __name__ == "__main__":
     main()
