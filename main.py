@@ -1,14 +1,16 @@
 import pygame
 import random
+import math
 from collisions import nextto_down, nextto_up, nextto_left, nextto_right
+from animation import animation
+pygame.font.init()
+pygame.mixer.init()
 
 pygame.font.init()
 
 WIDTH, HEIGHT = 1275, 675
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("First Python Game")
-
-# BG = pygame.transform.scale(pygame.image.load("bg.PNG"), (WIDTH, HEIGHT))
+pygame.display.set_caption("Coin Jump")
 
 
 # variables #
@@ -20,27 +22,66 @@ player_y_vel = 0
 jumpsLeft = 0
 flip = False
 playerFlipX = False
+frame = 0
 ###
 
-
 FONT = pygame.font.SysFont("", 30)
-
-test = False
 
 # art #
 player = pygame.transform.scale(pygame.image.load("art/tile002.png"), (35, 70))
 player_flippedX = pygame.transform.flip(player, True, False)
 player_flippedY = pygame.transform.flip(player, False, True)
 player_flippedYX = pygame.transform.flip(player, True, True)
+
+background = pygame.transform.scale(pygame.image.load("art/tile019.png"), (35, 35))
+grass = pygame.transform.scale(pygame.image.load("art/tile016.png"), (35, 35))
+
+coin = pygame.transform.scale(pygame.image.load("tile000.png"), (35, 35))
+coin1 = pygame.transform.scale(pygame.image.load("tile001.png"), (35, 35))
+coin2 = pygame.transform.scale(pygame.image.load("tile002.png"), (35, 35))
+coin3 = pygame.transform.scale(pygame.image.load("tile003.png"), (35, 35))
+###
+
+# MusicAndSounds/Sounds #
+pygame.mixer.music.load('MusicAndSounds/Min_Jam_Fae_Dark.wav')
+pygame.mixer.music.set_volume(0.1)
+pygame.mixer.music.play(-1)
 ###
 
 
+
 def draw(player):
-    # WIN.blit(BG, (0, 0))
+    global next_frame_time, current_frame, frame, playCoin
     WIN.fill('white')
 
-    # hi_text = FONT.render("HI", True, "white")
-    # WIN.blit(hi_text, (10, 10))
+    # background #
+    for x in range(math.ceil(WIDTH / 35)):
+        for y in range(math.ceil(HEIGHT / 35)):
+            WIN.blit(background, (x * 35, y * 35))
+    ###
+
+    # text #
+    s = [coin, coin1, coin2, coin3]
+    xy = (0, 0)
+    if flip:
+        hi_text = FONT.render("Tails", True, "white")
+        WIN.blit(hi_text, (WIDTH - 60, 45))
+    else:
+        hi_text = FONT.render("Heads", True, "white")
+        WIN.blit(hi_text, (WIDTH - 70, 45))
+    ###
+
+    # misc #
+    if not jumpsLeft > 0:
+        if frame < 8: #<- this animation has 4 frames, so I play it 2 times
+            frame = animation(WIN, [coin, coin1, coin2, coin3], (WIDTH - 55, 0), 100, False)
+        else:
+            animation(WIN, [coin, coin1, coin2, coin3], (WIDTH - 55, 0), 100, True)
+            WIN.blit(coin, (WIDTH - 55, 0))
+    else:
+        frame = 0
+        WIN.blit(coin, (WIDTH - 55, 0))
+    ###
 
     # player #
     if not playerFlipX:
