@@ -1,11 +1,11 @@
-import random
+import button
 
 import pygame
 import math
 pygame.font.init()
 from animation import animation
 
-
+dead = False
 
 # art #
 player = pygame.transform.scale(pygame.image.load("art/tile002.png"), (35, 70))
@@ -31,7 +31,7 @@ coin3 = pygame.transform.scale(pygame.image.load("art/coin/tile003.png"), (35, 3
 ###
 
 
-def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, dead):
+def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX):
     FONT = pygame.font.SysFont("", 30)
     FONT1 = pygame.font.SysFont("", 100)
 
@@ -56,7 +56,6 @@ def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFli
                 WIN.blit(spikedown, (x * 40, y * 40))
             elif level[y][x] == 5:
                 WIN.blit(grassDown, (x * 40, y * 40))
-
 
     # text #
     if dead:
@@ -96,3 +95,7 @@ def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFli
     ###
 
     pygame.display.update()
+
+def die():
+    global dead
+    dead = True
