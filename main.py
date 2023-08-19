@@ -198,17 +198,17 @@ def main():
         ###
 
         # bumping into the roof #
-        if nextto_down(player_xy, level) and player_y_vel > 0:
+        if nextto_down((player_xy[0], player_xy[1] - (20 if flip else 0)), level) and player_y_vel > 0:
             player_y_vel = 0
-        if nextto_up(player_xy, level) and player_y_vel < 0:
+        if nextto_up((player_xy[0], player_xy[1] + (20 if not flip else 0)), level) and player_y_vel < 0:
             player_y_vel = 0
 
         # velocity I think #
         for _ in range(round(player_y_vel)):
-            if player_y_vel > 0 and not nextto_down(player_xy, level):
+            if player_y_vel > 0 and not nextto_down((player_xy[0], player_xy[1] - (20 if flip else 0)), level):
                 player_xy[1] += 1
         for _ in range(-round(player_y_vel)):
-            if player_y_vel < 0 and not nextto_up(player_xy, level):
+            if player_y_vel < 0 and not nextto_up((player_xy[0], player_xy[1] + (20 if not flip else 0)), level):
                 player_xy[1] -= 1
         ###
 
@@ -219,6 +219,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-    pygame.quit()
