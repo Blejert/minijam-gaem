@@ -1,7 +1,7 @@
 import pygame
 import random
 import levels
-from Draw import draw
+import Draw
 from collisions import nextto_down, nextto_up, nextto_left, nextto_right, nexttolevel_right
 pygame.font.init()
 pygame.mixer.init()
@@ -22,7 +22,6 @@ jumpsLeft = 0
 flip = False
 playerFlipX = False
 frame = 0
-dead = False
 score = 0
 play = False
 ###
@@ -32,6 +31,7 @@ pygame.mixer.music.load('MusicAndSounds/Min_Jam_Fae_Dark.wav')
 pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)
 ###
+
 
 def selectlevel():
     global play, player_xy, level, flip
@@ -67,7 +67,7 @@ def selectlevel():
 
 def main():
     # stupid global stuff #
-    global player_y_vel, flip, jumpsLeft, jumped, playerFlipX, dead
+    global player_y_vel, flip, jumpsLeft, jumped, playerFlipX
     ###
 
     run = True
@@ -84,55 +84,60 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
                 break
+        if not Draw.dead:
+            # Player Movement #
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_d] and not nextto_right(player_xy, level):
+                player_xy[0] += 5
+                playerFlipX = False
+            if keys[pygame.K_a] and not nextto_left(player_xy, level):
+                player_xy[0] -= 5
+                playerFlipX = True
+            ###
 
-        # Player Movement #
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_d] and not nextto_right(player_xy, level):
-            player_xy[0] += 5
-            playerFlipX = False
-        if keys[pygame.K_a] and not nextto_left(player_xy, level):
-            player_xy[0] -= 5
-            playerFlipX = True
-        ###
-
-        # jump #
-        if not flip:
-            if nextto_down(player_xy, level):
-                jumpsLeft = 2
-            if keys[pygame.K_w] or keys[pygame.K_SPACE]:
+            # jump #
+            if not flip:
                 if nextto_down(player_xy, level):
-                    player_y_vel = -10
-                    jumpsLeft -= 1
-                    jumped = True
-                if not jumped and jumpsLeft == 1:
-                    jumpsLeft = 0
-                    jumped = True
-                    if random.randint(0, 2) == 1:
+                    jumpsLeft = 2
+                if keys[pygame.K_w] or keys[pygame.K_SPACE]:
+                    if nextto_down(player_xy, level):
                         player_y_vel = -10
-                    else:
-                        player_y_vel = 10
-                        flip = True
+                        jumpsLeft -= 1
+                        jumped = True
+                    if not jumped and jumpsLeft == 1:
+                        jumpsLeft = 0
+                        jumped = True
+                        if random.randint(0, 2) == 1:
+                            player_y_vel = -10
+                        else:
+                            player_y_vel = 10
+                            flip = True
+                else:
+                    jumped = False
             else:
-                jumped = False
-        else:
-            if nextto_up(player_xy, level):
-                jumpsLeft = 2
-            if keys[pygame.K_w] or keys[pygame.K_SPACE]:
                 if nextto_up(player_xy, level):
-                    player_y_vel = 10
-                    jumpsLeft -= 1
-                    jumped = True
-                if not jumped and jumpsLeft == 1:
-                    jumpsLeft = 0
-                    jumped = True
-                    if random.randint(0, 2) == 1:
+                    jumpsLeft = 2
+                if keys[pygame.K_w] or keys[pygame.K_SPACE]:
+                    if nextto_up(player_xy, level):
                         player_y_vel = 10
-                    else:
-                        player_y_vel = -10
-                        flip = False
-            else:
-                jumped = False
-        ###
+                        jumpsLeft -= 1
+                        jumped = True
+                    if not jumped and jumpsLeft == 1:
+                        jumpsLeft = 0
+                        jumped = True
+                        if random.randint(0, 2) == 1:
+                            player_y_vel = 10
+                        else:
+                            player_y_vel = -10
+                            flip = False
+                else:
+                    jumped = False
+            ###
+        else:
+            # stop music #
+            pygame.mixer.music.stop()
+            ###
+
 
         # gravity #
         if not flip:
@@ -158,7 +163,7 @@ def main():
                 player_xy[1] -= 1
         ###
 
-        draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, dead)
+        Draw.draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX)
 
     pygame.quit()
 
