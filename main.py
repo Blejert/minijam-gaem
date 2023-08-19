@@ -1,7 +1,8 @@
 import pygame
 import random
+import levels
 from Draw import draw
-from collisions import nextto_down, nextto_up, nextto_left, nextto_right
+from collisions import nextto_down, nextto_up, nextto_left, nextto_right, nexttolevel_right
 pygame.font.init()
 pygame.mixer.init()
 
@@ -9,32 +10,21 @@ WIDTH, HEIGHT = 1200, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Coin Jump")
 
+level = levels.level1
 
 # variables #
 PLAYER_WIDTH = 50
 PLAYER_HEIGHT = 50
 PLAYER_VEL = 5
-level = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-player_xy = [0, 0]
+player_xy = [0, 450]
 player_y_vel = 0
 jumpsLeft = 0
 flip = False
 playerFlipX = False
 frame = 0
+dead = False
+score = 0
+play = False
 ###
 
 # MusicAndSounds/Sounds #
@@ -43,18 +33,41 @@ pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)
 ###
 
+def selectlevel():
+    global play, player_xy, level, flip
 
+    # level stuff #
+    if not play:
+        number = random.randint(1, 3)
+        if number == 1:
+            if not level == levels.level:
+                level = levels.level
+                play = True
+            else:
+                selectlevel()
+        elif number == 2:
+            if not level == levels.level1:
+                level = levels.level1
+                play = True
+            else:
+                selectlevel()
+        else:
+            if not level == levels.level2:
+                level = levels.level2
+                play = True
+            else:
+                selectlevel()
 
-
+    ###
+    if nexttolevel_right(player_xy):
+        play = False
+        flip = False
+        player_xy = [0, 450]
 
 
 def main():
     # stupid global stuff #
-    global player_y_vel
-    global flip
-    global jumpsLeft
-    global jumped
-    global playerFlipX
+    global player_y_vel, flip, jumpsLeft, jumped, playerFlipX, dead
     ###
 
     run = True
@@ -62,6 +75,9 @@ def main():
     clock = pygame.time.Clock()
 
     while run:
+
+        selectlevel()
+
         clock.tick(60)
 
         for event in pygame.event.get():
@@ -142,7 +158,7 @@ def main():
                 player_xy[1] -= 1
         ###
 
-        draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX)
+        draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, dead)
 
     pygame.quit()
 
