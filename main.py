@@ -8,7 +8,7 @@ pygame.mixer.init()
 
 pygame.font.init()
 
-WIDTH, HEIGHT = 1275, 675
+WIDTH, HEIGHT = 1200, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Coin Jump")
 
@@ -17,6 +17,21 @@ pygame.display.set_caption("Coin Jump")
 PLAYER_WIDTH = 50
 PLAYER_HEIGHT = 50
 PLAYER_VEL = 5
+level = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 player_xy = [0, 0]
 player_y_vel = 0
 jumpsLeft = 0
@@ -33,8 +48,8 @@ player_flippedX = pygame.transform.flip(player, True, False)
 player_flippedY = pygame.transform.flip(player, False, True)
 player_flippedYX = pygame.transform.flip(player, True, True)
 
-background = pygame.transform.scale(pygame.image.load("art/tile019.png"), (35, 35))
-grass = pygame.transform.scale(pygame.image.load("art/tile016.png"), (35, 35))
+background = pygame.transform.scale(pygame.image.load("art/tile019.png"), (40, 40))
+grass = pygame.transform.scale(pygame.image.load("art/tile016.png"), (40, 40))
 
 coin = pygame.transform.scale(pygame.image.load("art/coin/tile000.png"), (35, 35))
 coin1 = pygame.transform.scale(pygame.image.load("art/coin/tile001.png"), (35, 35))
@@ -55,10 +70,16 @@ def draw(player):
     WIN.fill('white')
 
     # background #
-    for x in range(math.ceil(WIDTH / 35)):
-        for y in range(math.ceil(HEIGHT / 35)):
-            WIN.blit(background, (x * 35, y * 35))
+    for x in range(math.ceil(WIDTH / 40)):
+        for y in range(math.ceil(HEIGHT / 40)):
+            WIN.blit(background, (x * 40, y * 40))
     ###
+
+    # level #
+    for x in range(30):
+        for y in range (15):
+            if level[y][x] == 1:
+                WIN.blit(grass, (x * 40, y * 40))
 
     # text #
     if flip:
@@ -120,24 +141,24 @@ def main():
 
         # Player Movement #
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_d] and not nextto_right(player_xy):
+        if keys[pygame.K_d] and not nextto_right(player_xy, level):
             player_xy[0] += 5
             playerFlipX = False
-        if keys[pygame.K_a] and not nextto_left(player_xy):
+        if keys[pygame.K_a] and not nextto_left(player_xy, level):
             player_xy[0] -= 5
             playerFlipX = True
         ###
 
         # jump #
         if not flip:
-            if nextto_down(player_xy):
+            if nextto_down(player_xy, level):
                 jumpsLeft = 2
             if keys[pygame.K_w] or keys[pygame.K_SPACE]:
-                if nextto_down(player_xy):
+                if nextto_down(player_xy, level):
                     player_y_vel = -10
                     jumpsLeft -= 1
                     jumped = True
-                if not jumped and jumpsLeft == 1 and not nextto_up(player_xy):
+                if not jumped and jumpsLeft == 1:
                     jumpsLeft = 0
                     jumped = True
                     if random.randint(0, 2) == 1:
@@ -148,14 +169,14 @@ def main():
             else:
                 jumped = False
         else:
-            if nextto_up(player_xy):
+            if nextto_up(player_xy, level):
                 jumpsLeft = 2
             if keys[pygame.K_w] or keys[pygame.K_SPACE]:
-                if nextto_up(player_xy):
+                if nextto_up(player_xy, level):
                     player_y_vel = 10
                     jumpsLeft -= 1
                     jumped = True
-                if not jumped and jumpsLeft == 1 and not nextto_down(player_xy):
+                if not jumped and jumpsLeft == 1:
                     jumpsLeft = 0
                     jumped = True
                     if random.randint(0, 2) == 1:
@@ -169,23 +190,25 @@ def main():
 
         # gravity #
         if not flip:
-            if not nextto_down(player_xy):
+            if not nextto_down(player_xy, level):
                 player_y_vel += 0.3
-            elif player_y_vel > 0:
-                player_y_vel = 0
         else:
-            if not nextto_up(player_xy):
+            if not nextto_up(player_xy, level):
                 player_y_vel -= 0.3
-            elif player_y_vel < 0:
-                player_y_vel = 0
         ###
+
+        # bumping into the roof #
+        if nextto_down(player_xy, level) and player_y_vel > 0:
+            player_y_vel = 0
+        if nextto_up(player_xy, level) and player_y_vel < 0:
+            player_y_vel = 0
 
         # velocity I think #
         for _ in range(round(player_y_vel)):
-            if player_y_vel > 0 and not nextto_down(player_xy):
+            if player_y_vel > 0 and not nextto_down(player_xy, level):
                 player_xy[1] += 1
         for _ in range(-round(player_y_vel)):
-            if player_y_vel < 0 and not nextto_up(player_xy):
+            if player_y_vel < 0 and not nextto_up(player_xy, level):
                 player_xy[1] -= 1
         ###
 
@@ -199,7 +222,3 @@ if __name__ == "__main__":
 
 
     pygame.quit()
-
-
-if __name__ == "__main__":
-    main()
