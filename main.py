@@ -36,10 +36,10 @@ player_flippedYX = pygame.transform.flip(player, True, True)
 background = pygame.transform.scale(pygame.image.load("art/tile019.png"), (35, 35))
 grass = pygame.transform.scale(pygame.image.load("art/tile016.png"), (35, 35))
 
-coin = pygame.transform.scale(pygame.image.load("tile000.png"), (35, 35))
-coin1 = pygame.transform.scale(pygame.image.load("tile001.png"), (35, 35))
-coin2 = pygame.transform.scale(pygame.image.load("tile002.png"), (35, 35))
-coin3 = pygame.transform.scale(pygame.image.load("tile003.png"), (35, 35))
+coin = pygame.transform.scale(pygame.image.load("art/coin/tile000.png"), (35, 35))
+coin1 = pygame.transform.scale(pygame.image.load("art/coin/tile001.png"), (35, 35))
+coin2 = pygame.transform.scale(pygame.image.load("art/coin/tile002.png"), (35, 35))
+coin3 = pygame.transform.scale(pygame.image.load("art/coin/tile003.png"), (35, 35))
 ###
 
 # MusicAndSounds/Sounds #
