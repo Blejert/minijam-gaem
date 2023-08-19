@@ -59,7 +59,7 @@ coin3 = pygame.transform.scale(pygame.image.load("art/coin/tile003.png"), (35, 3
 
 # MusicAndSounds/Sounds #
 pygame.mixer.music.load('MusicAndSounds/Min_Jam_Fae_Dark.wav')
-pygame.mixer.music.set_volume(0.1)
+pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)
 ###
 
