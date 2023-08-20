@@ -2,6 +2,7 @@ import button
 import pygame
 import math
 #from main import resetscore
+import sys
 pygame.font.init()
 from animation import animation
 
@@ -85,7 +86,7 @@ def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFli
         if button.is_button_clicked(WIDTH / 2 - 160 / 3, HEIGHT / 2 + 90, buttonS, clicked):
             Click_Sound.play()
             pygame.quit()
-            quit()
+            sys.exit()
     else:
         score_text = FONT.render("Score: " + str(score), True, "white")
         WIN.blit(score_text, (0,0))
