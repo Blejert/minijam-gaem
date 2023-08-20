@@ -19,7 +19,7 @@ background = pygame.transform.scale(pygame.image.load("art/tiles/tile019.png"), 
 grassUp = pygame.transform.scale(pygame.image.load("art/tiles/tile016.png"), (40, 40))
 grassDown = pygame.transform.flip(grassUp, False, True)
 dirt = pygame.transform.scale(pygame.image.load("art/tiles/tile024.png"), (40, 40))
-spikedown = pygame.transform.scale(pygame.image.load("art/tiles/tile020.png"), (40, 40))
+spikedown = pygame.transform.scale(pygame.image.load("art/tiles/spike.png"), (40, 40))
 spikeup = pygame.transform.flip(spikedown, False, True)
 
 coin = pygame.transform.scale(pygame.image.load("art/coin/tile000.png"), (35, 35))
@@ -31,8 +31,8 @@ buttonS = pygame.transform.scale(pygame.image.load("art/Sprite-0003.png"), (160,
 ###
 
 
-def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, Highscore, score):
-    global dead, t
+def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, score):
+    global dead, t, found
     FONT = pygame.font.SysFont("", 30)
     FONT1 = pygame.font.SysFont("", 100)
     FONT2 = pygame.font.SysFont("", 50)
@@ -40,8 +40,8 @@ def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFli
     WIN.fill('white')
 
     # background #
-    for x in range(math.ceil(WIDTH / 40)):
-        for y in range(math.ceil(HEIGHT / 40)):
+    for x in range(30):
+        for y in range(15):
             WIN.blit(background, (x * 40, y * 40))
     ###
 
@@ -76,7 +76,6 @@ def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFli
     else:
         score_text = FONT.render("Score: " + str(score), True, "white")
         WIN.blit(score_text, (0,0))
-
     ###
 
     # text #
@@ -88,18 +87,12 @@ def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFli
         WIN.blit(hi_text, (WIDTH - 70, 0))
     ###
 
-
-
     # misc #
     if not jumpsLeft > 0:
         if frame < 8: #<- this animation has 4 frames, so I play it 2 times
             frame = animation(WIN, [coin, coin1, coin2, coin3], (player_xy[0], player_xy[1] - (-55 if flip else 20)), 100, False)
         else:
             animation(WIN, [coin, coin1, coin2, coin3], (player_xy[0], player_xy[1] - (40 if flip else 40), 100, True))
-            WIN.blit(coin, (player_xy[0], player_xy[1] - (-55 if flip else 20)))
-    else:
-        frame = 0
-        WIN.blit(coin, (player_xy[0], player_xy[1] - (-55 if flip else 20)))
     ###
 
     # player #
