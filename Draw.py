@@ -1,7 +1,7 @@
 import button
 import pygame
 import math
-from main import resetscore
+#from main import resetscore
 pygame.font.init()
 from animation import animation
 
@@ -19,8 +19,8 @@ background = pygame.transform.scale(pygame.image.load("art/tiles/tile019.png"), 
 grassUp = pygame.transform.scale(pygame.image.load("art/tiles/tile016.png"), (40, 40))
 grassDown = pygame.transform.flip(grassUp, False, True)
 dirt = pygame.transform.scale(pygame.image.load("art/tiles/tile024.png"), (40, 40))
-spikedown = pygame.transform.scale(pygame.image.load("art/tiles/spike.png"), (40, 40))
-spikeup = pygame.transform.flip(spikedown, False, True)
+spikedown = pygame.surface.Surface((40,40)) #pygame.transform.scale(pygame.image.load("art/tiles/spike.png"), (40, 40))
+spikeup = spikedown #pygame.transform.flip(spikedown, False, True)
 
 coin = pygame.transform.scale(pygame.image.load("art/coin/tile000.png"), (35, 35))
 coin1 = pygame.transform.scale(pygame.image.load("art/coin/tile001.png"), (35, 35))
@@ -32,11 +32,11 @@ buttonS = pygame.transform.scale(pygame.image.load("art/Sprite-0003.png"), (160,
 
 
 
-Click_Sound = pygame.mixer.Sound("MusicAndSounds/click.wav")
-Click_Sound.set_volume(0.5)
+#Click_Sound = pygame.mixer.Sound("MusicAndSounds/click.wav")
+#Click_Sound.set_volume(0.5)
 
 
-def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, score):
+def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, score, clicked):
     global dead, t, found
     FONT = pygame.font.SysFont("", 30)
     FONT1 = pygame.font.SysFont("", 100)
@@ -78,12 +78,12 @@ def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFli
         button.draw_button(WIN, WIDTH / 2 - 160 / 3, HEIGHT / 2 + 90, buttonS)
         quit_text = FONT2.render("Quit", True, "black")
         WIN.blit(quit_text, (WIDTH / 2 - 50 / 3, HEIGHT / 2 + 115))
-        if button.is_button_clicked(WIDTH/2 - 160/3, HEIGHT/2, buttonS):
-            Click_Sound.play()
+        if button.is_button_clicked(WIDTH/2 - 160/3, HEIGHT/2, buttonS, clicked):
+            #Click_Sound.play()
             t = True
             dead = False
-        if button.is_button_clicked(WIDTH / 2 - 160 / 3, HEIGHT / 2 + 90, buttonS):
-            Click_Sound.play()
+        if button.is_button_clicked(WIDTH / 2 - 160 / 3, HEIGHT / 2 + 90, buttonS, clicked):
+            #Click_Sound.play()
             pygame.quit()
             quit()
     else:
