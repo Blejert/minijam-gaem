@@ -16,6 +16,7 @@ def animation(WIN, s, xy, time, reset):
             animation_count += 1
 
         WIN.blit(s[current_frame], xy)
+
         return animation_count
     else:
         animation_count = 0

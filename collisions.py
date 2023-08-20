@@ -6,11 +6,11 @@ import pygame
 import math
 import Draw
 
-#Death_Sound = pygame.mixer.Sound("MusicAndSounds/death.wav")
-#Death_Sound.set_volume(0.5)
-#
-#Next_Sound = pygame.mixer.Sound("MusicAndSounds/nextlevel.wav")
-#Next_Sound.set_volume(0.5)
+Death_Sound = pygame.mixer.Sound("MusicAndSounds/death.wav")
+Death_Sound.set_volume(0.3)
+
+Next_Sound = pygame.mixer.Sound("MusicAndSounds/nextlevel.wav")
+Next_Sound.set_volume(0.3)
 
 
 def nextto_down(player_xy, level):
@@ -18,7 +18,7 @@ def nextto_down(player_xy, level):
         return True
     if (player_xy[1] + 70) % 40 == 0:
         if level[math.floor((player_xy[1] + 70) / 40)][math.floor(player_xy[0] / 40)] == 3:
-            #Death_Sound.play()
+            Death_Sound.play()
             Draw.dead = True
     if (player_xy[1] + 70) % 40 == 0:
         if level[math.floor((player_xy[1] + 70) / 40)][math.floor(player_xy[0] / 40)] != 0 or \
@@ -33,7 +33,7 @@ def nextto_up(player_xy, level):
         return True
     if (player_xy[0] - 40) % 40 == 0:
         if level[math.floor((player_xy[1] - 20) / 40)][math.floor(player_xy[0] / 40)] == 4:
-            #Death_Sound.play()
+            Death_Sound.play()
             Draw.dead = True
     if (player_xy[1] - 40) % 40 == 0:
         if level[math.floor((player_xy[1] - 40) / 40)][math.floor(player_xy[0] / 40)] != 0 or \
@@ -61,6 +61,6 @@ def nextto_right(player_xy, level):
 
 def nexttolevel_right(player_xy):
     if player_xy[0] + 35 + 1 > 1200:
-        #Next_Sound.play()
+        Next_Sound.play()
         return True
     return False
