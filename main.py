@@ -35,6 +35,7 @@ start = False
 has_jumped = False
 gavePoint = False
 credits = False
+tutorial = False
 ###
 
 # MusicAndSounds/Sounds #
@@ -62,7 +63,7 @@ FONT2 = pygame.font.SysFont("", 50)
 
 def drawstart(WIN):
     pygame.display.update()
-    global start, credits
+    global start, credits, tutorial
     # background #
     for x in range(math.ceil(WIDTH / 40)):
         for y in range(math.ceil(HEIGHT / 40)):
@@ -72,7 +73,7 @@ def drawstart(WIN):
     print(pygame.mouse.get_pressed()[0])
     clicked = pygame.mouse.get_pressed()[0] and not already_pressed
 
-    if not credits:
+    if not credits and not tutorial:
         start_text = FONT1.render("Coin Jump", True, "white")
         WIN.blit(start_text, (WIDTH / 2 - 180, HEIGHT / 2 - 150 + 20))
 
@@ -90,14 +91,21 @@ def drawstart(WIN):
             Click_Sound.play()
             credits = True
 
-        button.draw_button(WIN, WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1)
+        button.draw_button(WIN, WIDTH / 2 - 160 / 2, HEIGHT / 2 + 170, buttonS1)
         quit_text = FONT.render("quit", True, "black")
-        WIN.blit(quit_text, (WIDTH / 2 - 20, HEIGHT / 2 + 180))
-        if button.is_button_clicked(WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1, clicked):
+        WIN.blit(quit_text, (WIDTH / 2 - 60, HEIGHT / 2 + 180))
+        if button.is_button_clicked(WIDTH / 2 - 160 / 2, HEIGHT / 2 + 170, buttonS1, clicked):
             Click_Sound.play()
             pygame.quit()
             quit()
-    else:
+
+        button.draw_button(WIN, WIDTH / 2 - 00 / 2, HEIGHT / 2 + 170, buttonS1)
+        t_text = FONT.render("tutorial", True, "black")
+        WIN.blit(t_text, (WIDTH / 2 + 5, HEIGHT / 2 + 180))
+        if button.is_button_clicked(WIDTH / 2 - 00 / 2, HEIGHT / 2 + 170, buttonS1, clicked):
+            Click_Sound.play()
+            tutorial = True
+    elif credits:
         text = FONT.render("Programming By: Theboredkid and Blejert", True, "white")
         WIN.blit(text, (WIDTH / 3, HEIGHT / 2))
         text2 = FONT.render("Music By: Zig zag", True, "white")
@@ -111,6 +119,16 @@ def drawstart(WIN):
         if button.is_button_clicked(WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1, clicked):
             Click_Sound.play()
             credits = False
+    else:
+        text = FONT.render("When you double jump theres a 50/50 chance that gravity flips", True, "white")
+        WIN.blit(text, (WIDTH / 5, HEIGHT / 2))
+
+        button.draw_button(WIN, WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1)
+        quit_text = FONT.render("return", True, "black")
+        WIN.blit(quit_text, (WIDTH / 2 - 30, HEIGHT / 2 + 180))
+        if button.is_button_clicked(WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1, clicked):
+            Click_Sound.play()
+            tutorial = False
 
 
 
@@ -131,7 +149,7 @@ def selectlevel():
         if score < 10:
             chosen_level = level_list[random.randint(0, 3)]
         else:
-            chosen_level = level_list1[random.randint(0, 1)]
+            chosen_level = level_list1[random.randint(0, 2)]
         if not level == chosen_level:
             level = chosen_level
             play = True
