@@ -3,7 +3,6 @@ import random
 import math
 import button
 import levels
-import levels1
 import Draw
 from collisions import nextto_down, nextto_up, nextto_left, nextto_right, nexttolevel_right
 pygame.font.init()
@@ -14,8 +13,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Coin Jump")
 
 level = levels.level1
-level_list = [levels.level, levels.level1, levels.level2, levels.level3]
-level_list1 = [levels1.level, levels1.level1, levels1.level2, levels1.level3]
+level_list = [levels.level, levels.level1, levels.level2, levels.level3, levels.level4]
 
 # variables #
 PLAYER_WIDTH = 50
@@ -25,6 +23,7 @@ player_xy = [0, 450]
 player_y_vel = 0
 jumpsLeft = 0
 flip = False
+already_pressed = False
 playerFlipX = False
 frame = 0
 score = -1
@@ -34,25 +33,21 @@ start = False
 has_jumped = False
 gavePoint = False
 credits = False
-FPS = 60
-SPEED = 5
-JUMP_SPEED = 10
-music = False
 ###
 
 # MusicAndSounds/Sounds #
-pygame.mixer.music.load('MusicAndSounds/Mini_Jam_Fae.wav')
-pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.load('MusicAndSounds/Min_Jam_Fae_Dark.wav')
+pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)
 
 Jump_Sound = pygame.mixer.Sound("MusicAndSounds/jump.wav")
-Jump_Sound.set_volume(0.3)
+Jump_Sound.set_volume(0.5)
 
 Click_Sound = pygame.mixer.Sound("MusicAndSounds/click.wav")
-Click_Sound.set_volume(0.3)
+Click_Sound.set_volume(0.5)
 
 Gravity_Sound = pygame.mixer.Sound("MusicAndSounds/gravity.wav")
-Gravity_Sound.set_volume(0.3)
+Gravity_Sound.set_volume(0.5)
 ###
 
 buttonS = pygame.transform.scale(pygame.image.load("art/Sprite-0003.png"), (160, 80))
@@ -72,6 +67,9 @@ def drawstart(WIN):
             WIN.blit(background, (x * 40, y * 40))
     ###
 
+    print(pygame.mouse.get_pressed()[0])
+    clicked = pygame.mouse.get_pressed()[0] and not already_pressed
+
     if not credits:
         start_text = FONT1.render("Coin Jump", True, "white")
         WIN.blit(start_text, (WIDTH / 2 - 180, HEIGHT / 2 - 150 + 20))
@@ -79,36 +77,36 @@ def drawstart(WIN):
         button.draw_button(WIN, WIDTH / 2 - 160 / 2, HEIGHT / 2 - 10, buttonS)
         start_text = FONT2.render("Play", True, "black")
         WIN.blit(start_text, (WIDTH / 2 - 80 + 40, HEIGHT / 2 - 10 + 20))
-        if button.is_button_clicked(WIDTH / 2 - 160 / 2, HEIGHT / 2 - 40, buttonS):
+        if button.is_button_clicked(WIDTH / 2 - 160 / 2, HEIGHT / 2 - 40, buttonS, clicked):
             Click_Sound.play()
             start = True
 
         button.draw_button(WIN, WIDTH / 2 - 160 / 2, HEIGHT / 2 + 80, buttonS)
         credits_text = FONT2.render("Credits", True, "black")
         WIN.blit(credits_text, (WIDTH / 2 - 60, HEIGHT / 2 + 100))
-        if button.is_button_clicked(WIDTH / 2 - 160 / 2, HEIGHT / 2 + 80, buttonS):
+        if button.is_button_clicked(WIDTH / 2 - 160 / 2, HEIGHT / 2 + 80, buttonS, clicked):
             Click_Sound.play()
             credits = True
 
         button.draw_button(WIN, WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1)
         quit_text = FONT.render("quit", True, "black")
         WIN.blit(quit_text, (WIDTH / 2 - 20, HEIGHT / 2 + 180))
-        if button.is_button_clicked(WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1):
+        if button.is_button_clicked(WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1, clicked):
             Click_Sound.play()
             pygame.quit()
             quit()
     else:
-        text = FONT.render("Programming By: Theboredkid and Bejert", True, "white")
+        text = FONT.render("Programming By: Theboredkid and Blejert", True, "white")
         WIN.blit(text, (WIDTH / 3, HEIGHT / 2))
         text2 = FONT.render("Music By: Zig zag", True, "white")
         WIN.blit(text2, (WIDTH / 2 - 125, HEIGHT / 2 + 25))
-        text1 = FONT.render("Art By: Splunky", True, "white")
+        text1 = FONT.render("Art By: Spelunky", True, "white")
         WIN.blit(text1, (WIDTH / 2 - 97, HEIGHT / 2 + 50))
 
         button.draw_button(WIN, WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1)
         quit_text = FONT.render("return", True, "black")
         WIN.blit(quit_text, (WIDTH / 2 - 30, HEIGHT / 2 + 180))
-        if button.is_button_clicked(WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1):
+        if button.is_button_clicked(WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1, clicked):
             Click_Sound.play()
             credits = False
 
@@ -128,14 +126,11 @@ def selectlevel():
                 score += 1
                 gavePoint = True
         print("hi")
-        if score < 10:
-            chosen_level = level_list[random.randint(0, 3)]
-        else:
-            chosen_level = level_list1[random.randint(0, 1)]
+        chosen_level = level_list[random.randint(0, 4)]
         if not level == chosen_level:
-                level = chosen_level
-                play = True
-                selectlevel()
+            level = chosen_level
+            play = True
+            selectlevel()
     else:
         gavePoint = False
 
@@ -148,27 +143,12 @@ def selectlevel():
 
 def main():
     # stupid global stuff #
-    global player_y_vel, flip, jumpsLeft, jumped, playerFlipX, player_xy, play, score, music, chosen_level
+    global player_y_vel, flip, jumpsLeft, jumped, playerFlipX, player_xy, play, score, already_pressed
     ###
 
     run = True
 
-    clock = pygame.time.Clock()
-    clock.tick(30)
-
     while run:
-
-        if not score < 10 and not music:
-            pygame.mixer.music.load('MusicAndSounds/Min_Jam_Fae_Dark.wav')
-            pygame.mixer.music.set_volume(0.5)
-            pygame.mixer.music.play(-1)
-            music = True
-
-        if Draw.dead:
-            pygame.mixer.music.load('MusicAndSounds/Mini_Jam_Fae.wav')
-            pygame.mixer.music.set_volume(0.5)
-            pygame.mixer.music.play(-1)
-
 
 
         if start:
@@ -273,21 +253,20 @@ def main():
                 score = 0
                 Draw.t = False
 
-            if keys[pygame.K_e]:
-                score = 9
-
-            Draw.draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, score)
+            Draw.draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, score, pygame.mouse.get_pressed()[0] and not already_pressed)
         else:
             pygame.mouse.set_visible(True)
             drawstart(WIN)
 
-
+        already_pressed = pygame.mouse.get_pressed()[0]
 
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
-                break
+                pygame.quit()
+                exit()
+
+        pygame.time.Clock().tick(60)
 
     pygame.quit()
 
