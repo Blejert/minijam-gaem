@@ -276,9 +276,6 @@ def main():
                 score = 0
                 Draw.t = False
 
-            if keys[pygame.K_e]:
-                score = 9
-
             Draw.draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, score, pygame.mouse.get_pressed()[0] and not already_pressed)
         else:
             pygame.mouse.set_visible(True)
