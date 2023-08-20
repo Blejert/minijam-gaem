@@ -31,6 +31,11 @@ buttonS = pygame.transform.scale(pygame.image.load("art/Sprite-0003.png"), (160,
 ###
 
 
+
+Click_Sound = pygame.mixer.Sound("MusicAndSounds/click.wav")
+Click_Sound.set_volume(0.5)
+
+
 def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, score):
     global dead, t, found
     FONT = pygame.font.SysFont("", 30)
@@ -70,9 +75,17 @@ def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFli
         WIN.blit(reset_text, (WIDTH / 2 - 50 / 3 , HEIGHT / 2 + 25))
         score_text = FONT2.render("Score: " + str(score), True, "white")
         WIN.blit(score_text, (WIDTH / 2 - 100 / 3, HEIGHT / 2 - 35))
+        button.draw_button(WIN, WIDTH / 2 - 160 / 3, HEIGHT / 2 + 90, buttonS)
+        quit_text = FONT2.render("Quit", True, "black")
+        WIN.blit(quit_text, (WIDTH / 2 - 50 / 3, HEIGHT / 2 + 115))
         if button.is_button_clicked(WIDTH/2 - 160/3, HEIGHT/2, buttonS):
+            Click_Sound.play()
             t = True
             dead = False
+        if button.is_button_clicked(WIDTH / 2 - 160 / 3, HEIGHT / 2 + 90, buttonS):
+            Click_Sound.play()
+            pygame.quit()
+            quit()
     else:
         score_text = FONT.render("Score: " + str(score), True, "white")
         WIN.blit(score_text, (0,0))
