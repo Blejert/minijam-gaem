@@ -15,11 +15,12 @@ player_flippedY = pygame.transform.flip(player, False, True)
 player_flippedYX = pygame.transform.flip(player, True, True)
 
 
-background = pygame.transform.scale(pygame.image.load("art/tiles/tile019.png"), (40, 40))
+background1 = pygame.transform.scale(pygame.image.load("art/tiles/tile019.png"), (40, 40))
+background = pygame.transform.scale(pygame.image.load("art/tiles/background1.png"), (40, 40))
 grassUp = pygame.transform.scale(pygame.image.load("art/tiles/tile016.png"), (40, 40))
 grassDown = pygame.transform.flip(grassUp, False, True)
 dirt = pygame.transform.scale(pygame.image.load("art/tiles/tile024.png"), (40, 40))
-spikedown = pygame.transform.scale(pygame.image.load("art/tiles/spike.png"), (40, 40))
+spikedown = pygame.transform.scale(pygame.image.load("art/tiles/tile020.png"), (40, 40))
 spikeup = pygame.transform.flip(spikedown, False, True)
 
 coin = pygame.transform.scale(pygame.image.load("art/coin/tile000.png"), (35, 35))
@@ -47,7 +48,10 @@ def draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFli
     # background #
     for x in range(30):
         for y in range(15):
-            WIN.blit(background, (x * 40, y * 40))
+            if score < 10:
+                WIN.blit(background, (x * 40, y * 40))
+            else:
+                WIN.blit(background1, (x * 40, y * 40))
     ###
 
     # level #

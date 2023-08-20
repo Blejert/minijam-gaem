@@ -3,6 +3,7 @@ import random
 import math
 import button
 import levels
+import levels1
 import Draw
 from collisions import nextto_down, nextto_up, nextto_left, nextto_right, nexttolevel_right
 pygame.font.init()
@@ -13,7 +14,8 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Coin Jump")
 
 level = levels.level1
-level_list = [levels.level, levels.level1, levels.level2, levels.level3, levels.level4]
+level_list = [levels.level, levels.level1, levels.level2, levels.level3]
+level_list1 = [levels1.level, levels1.level1, levels1.level2, levels1.level3]
 
 # variables #
 PLAYER_WIDTH = 50
@@ -126,7 +128,10 @@ def selectlevel():
                 score += 1
                 gavePoint = True
         print("hi")
-        chosen_level = level_list[random.randint(0, 4)]
+        if score < 10:
+            chosen_level = level_list[random.randint(0, 3)]
+        else:
+            chosen_level = level_list1[random.randint(0, 1)]
         if not level == chosen_level:
             level = chosen_level
             play = True
@@ -253,6 +258,9 @@ def main():
                 score = 0
                 Draw.t = False
 
+            if keys[pygame.K_e]:
+                score = 9
+
             Draw.draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, score, pygame.mouse.get_pressed()[0] and not already_pressed)
         else:
             pygame.mouse.set_visible(True)
@@ -265,6 +273,7 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+
 
         pygame.time.Clock().tick(60)
 
