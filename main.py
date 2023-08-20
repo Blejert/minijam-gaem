@@ -1,5 +1,7 @@
 import pygame
 import random
+import math
+import button
 import levels
 import Draw
 from collisions import nextto_down, nextto_up, nextto_left, nextto_right, nexttolevel_right
@@ -23,17 +25,88 @@ jumpsLeft = 0
 flip = False
 playerFlipX = False
 frame = 0
-Highscore = -1
 score = -1
 play = False
 test = False
+start = False
+has_jumped = False
+gavePoint = False
+credits = False
 ###
 
 # MusicAndSounds/Sounds #
 pygame.mixer.music.load('MusicAndSounds/Min_Jam_Fae_Dark.wav')
 pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1)
+
+Jump_Sound = pygame.mixer.Sound("MusicAndSounds/jump.wav")
+Jump_Sound.set_volume(0.5)
+
+Click_Sound = pygame.mixer.Sound("MusicAndSounds/click.wav")
+Click_Sound.set_volume(0.5)
+
+Gravity_Sound = pygame.mixer.Sound("MusicAndSounds/gravity.wav")
+Gravity_Sound.set_volume(0.5)
 ###
+
+buttonS = pygame.transform.scale(pygame.image.load("art/Sprite-0003.png"), (160, 80))
+buttonS1 = pygame.transform.scale(pygame.image.load("art/Sprite-0003.png"), (80, 40))
+background = pygame.transform.scale(pygame.image.load("art/tiles/tile019.png"), (40, 40))
+
+FONT = pygame.font.SysFont("", 30)
+FONT1 = pygame.font.SysFont("", 100)
+FONT2 = pygame.font.SysFont("", 50)
+
+def drawstart(WIN):
+    pygame.display.update()
+    global start, credits
+    # background #
+    for x in range(math.ceil(WIDTH / 40)):
+        for y in range(math.ceil(HEIGHT / 40)):
+            WIN.blit(background, (x * 40, y * 40))
+    ###
+
+    if not credits:
+        start_text = FONT1.render("Coin Jump", True, "white")
+        WIN.blit(start_text, (WIDTH / 2 - 180, HEIGHT / 2 - 150 + 20))
+
+        button.draw_button(WIN, WIDTH / 2 - 160 / 2, HEIGHT / 2 - 10, buttonS)
+        start_text = FONT2.render("Play", True, "black")
+        WIN.blit(start_text, (WIDTH / 2 - 80 + 40, HEIGHT / 2 - 10 + 20))
+        if button.is_button_clicked(WIDTH / 2 - 160 / 2, HEIGHT / 2 - 40, buttonS):
+            Click_Sound.play()
+            start = True
+
+        button.draw_button(WIN, WIDTH / 2 - 160 / 2, HEIGHT / 2 + 80, buttonS)
+        credits_text = FONT2.render("Credits", True, "black")
+        WIN.blit(credits_text, (WIDTH / 2 - 60, HEIGHT / 2 + 100))
+        if button.is_button_clicked(WIDTH / 2 - 160 / 2, HEIGHT / 2 + 80, buttonS):
+            Click_Sound.play()
+            credits = True
+
+        button.draw_button(WIN, WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1)
+        quit_text = FONT.render("quit", True, "black")
+        WIN.blit(quit_text, (WIDTH / 2 - 20, HEIGHT / 2 + 180))
+        if button.is_button_clicked(WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1):
+            Click_Sound.play()
+            pygame.quit()
+            quit()
+    else:
+        text = FONT.render("Programming By: Theboredkid and Bejert", True, "white")
+        WIN.blit(text, (WIDTH / 3, HEIGHT / 2))
+        text2 = FONT.render("Music By: Zig zag", True, "white")
+        WIN.blit(text2, (WIDTH / 2 - 125, HEIGHT / 2 + 25))
+        text1 = FONT.render("Art By: Splunky", True, "white")
+        WIN.blit(text1, (WIDTH / 2 - 97, HEIGHT / 2 + 50))
+
+        button.draw_button(WIN, WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1)
+        quit_text = FONT.render("return", True, "black")
+        WIN.blit(quit_text, (WIDTH / 2 - 30, HEIGHT / 2 + 180))
+        if button.is_button_clicked(WIDTH / 2 - 80 / 2, HEIGHT / 2 + 170, buttonS1):
+            Click_Sound.play()
+            credits = False
+
+
 
 def resetscore():
     global score
@@ -41,19 +114,21 @@ def resetscore():
 
 
 def selectlevel():
-    global play, player_xy, level, flip, Highscore, score
+    global play, player_xy, level, flip, score, gavePoint
     # level stuff #
     if not play:
         if not Draw.dead:
-            score += 1
-            if score > Highscore:
-                Highscore += 1
+            if not gavePoint:
+                score += 1
+                gavePoint = True
         print("hi")
-        chosen_level = level_list[random.randint(0, 2)]
+        chosen_level = level_list[random.randint(0, 4)]
         if not level == chosen_level:
             level = chosen_level
             play = True
             selectlevel()
+    else:
+        gavePoint = False
 
     ###
     if nexttolevel_right(player_xy):
@@ -64,112 +139,131 @@ def selectlevel():
 
 def main():
     # stupid global stuff #
-    global player_y_vel, flip, jumpsLeft, jumped, playerFlipX, player_xy, play, Highscore, score
+    global player_y_vel, flip, jumpsLeft, jumped, playerFlipX, player_xy, play, score
     ###
 
     run = True
 
     clock = pygame.time.Clock()
+    clock.tick(30)
 
     while run:
 
-        selectlevel()
 
-        clock.tick(60)
+        if start:
+            selectlevel()
+
+            if not Draw.dead:
+                # Player Movement #
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_d] and not nextto_right(player_xy, level):
+                    player_xy[0] += 5
+                    playerFlipX = False
+                if keys[pygame.K_a] and not nextto_left(player_xy, level):
+                    player_xy[0] -= 5
+                    playerFlipX = True
+                ###
+
+                # jump #
+                if not flip:
+                    if nextto_down(player_xy, level):
+                        jumpsLeft = 2
+                    if keys[pygame.K_w] or keys[pygame.K_SPACE]:
+                        if not has_jumped and not jumpsLeft <= 0:
+                            Jump_Sound.play()
+                            has_jumped = True
+                        if nextto_down(player_xy, level):
+                            player_y_vel = -10
+                            jumpsLeft -= 1
+                            jumped = True
+                        if not jumped and jumpsLeft == 1:
+                            jumpsLeft = 0
+                            jumped = True
+                            if random.randint(0, 2) == 1:
+                                player_y_vel = -10
+                            else:
+                                player_y_vel = 10
+                                Gravity_Sound.play()
+                                flip = True
+                    else:
+                        has_jumped = False
+                        jumped = False
+                else:
+                    if nextto_up(player_xy, level):
+                        jumpsLeft = 2
+                    if keys[pygame.K_w] or keys[pygame.K_SPACE]:
+                        if not has_jumped and not jumpsLeft <= 0:
+                            Jump_Sound.play()
+                            has_jumped = True
+                        if nextto_up(player_xy, level):
+                            player_y_vel = 10
+                            jumpsLeft -= 1
+                            jumped = True
+                        if not jumped and jumpsLeft == 1:
+                            jumpsLeft = 0
+                            jumped = True
+                            if random.randint(0, 2) == 1:
+                                player_y_vel = 10
+                            else:
+                                player_y_vel = -10
+                                Gravity_Sound.play()
+                                flip = False
+                    else:
+                        has_jumped = False
+                        jumped = False
+                ###
+
+            # gravity #
+            if not flip:
+                if not nextto_down(player_xy, level):
+                    player_y_vel += 0.3
+            else:
+                if not nextto_up(player_xy, level):
+                    player_y_vel -= 0.3
+            ###
+
+            # bumping into the roof #
+            if nextto_down((player_xy[0], player_xy[1] - (20 if flip else 0)), level) and player_y_vel > 0:
+                player_y_vel = 0
+            if nextto_up((player_xy[0], player_xy[1] + (20 if not flip else 0)), level) and player_y_vel < 0:
+                player_y_vel = 0
+
+            # velocity I think #
+            for _ in range(round(player_y_vel)):
+                if player_y_vel > 0 and not nextto_down((player_xy[0], player_xy[1] - (20 if flip else 0)), level):
+                    player_xy[1] += 1
+            for _ in range(-round(player_y_vel)):
+                if player_y_vel < 0 and not nextto_up((player_xy[0], player_xy[1] + (20 if not flip else 0)), level):
+                    player_xy[1] -= 1
+            ###
+
+            if Draw.dead:
+                pygame.mouse.set_visible(True)
+                player_xy = [0, 450]
+                if not test:
+                    play = False
+                    test = True
+                    flip = False
+            else:
+                pygame.mouse.set_visible(False)
+                test = False
+
+            if Draw.t:
+                score = 0
+                Draw.t = False
+
+            Draw.draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, score)
+        else:
+            pygame.mouse.set_visible(True)
+            drawstart(WIN)
+
+
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 break
-        if not Draw.dead:
-            # Player Movement #
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_d] and not nextto_right(player_xy, level):
-                player_xy[0] += 5
-                playerFlipX = False
-            if keys[pygame.K_a] and not nextto_left(player_xy, level):
-                player_xy[0] -= 5
-                playerFlipX = True
-            ###
-
-            # jump #
-            if not flip:
-                if nextto_down(player_xy, level):
-                    jumpsLeft = 2
-                if keys[pygame.K_w] or keys[pygame.K_SPACE]:
-                    if nextto_down(player_xy, level):
-                        player_y_vel = -10
-                        jumpsLeft -= 1
-                        jumped = True
-                    if not jumped and jumpsLeft == 1:
-                        jumpsLeft = 0
-                        jumped = True
-                        if random.randint(0, 2) == 1:
-                            player_y_vel = -10
-                        else:
-                            player_y_vel = 10
-                            flip = True
-                else:
-                    jumped = False
-            else:
-                if nextto_up(player_xy, level):
-                    jumpsLeft = 2
-                if keys[pygame.K_w] or keys[pygame.K_SPACE]:
-                    if nextto_up(player_xy, level):
-                        player_y_vel = 10
-                        jumpsLeft -= 1
-                        jumped = True
-                    if not jumped and jumpsLeft == 1:
-                        jumpsLeft = 0
-                        jumped = True
-                        if random.randint(0, 2) == 1:
-                            player_y_vel = 10
-                        else:
-                            player_y_vel = -10
-                            flip = False
-                else:
-                    jumped = False
-            ###d
-
-
-        # gravity #
-        if not flip:
-            if not nextto_down(player_xy, level):
-                player_y_vel += 0.3
-        else:
-            if not nextto_up(player_xy, level):
-                player_y_vel -= 0.3
-        ###
-
-        # bumping into the roof #
-        if nextto_down((player_xy[0], player_xy[1] - (20 if flip else 0)), level) and player_y_vel > 0:
-            player_y_vel = 0
-        if nextto_up((player_xy[0], player_xy[1] + (20 if not flip else 0)), level) and player_y_vel < 0:
-            player_y_vel = 0
-
-        # velocity I think #
-        for _ in range(round(player_y_vel)):
-            if player_y_vel > 0 and not nextto_down((player_xy[0], player_xy[1] - (20 if flip else 0)), level):
-                player_xy[1] += 1
-        for _ in range(-round(player_y_vel)):
-            if player_y_vel < 0 and not nextto_up((player_xy[0], player_xy[1] + (20 if not flip else 0)), level):
-                player_xy[1] -= 1
-        ###
-
-        if Draw.dead:
-            player_xy = [0, 450]
-            if not test:
-                play = False
-                test = True
-                flip = False
-        else:
-            test = False
-
-        if Draw.t:
-            score = 0
-            Draw.t = False
-
-        Draw.draw(flip, WIDTH, HEIGHT, WIN, level, jumpsLeft, frame, player_xy, playerFlipX, Highscore, score)
 
     pygame.quit()
 
